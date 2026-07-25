@@ -8,9 +8,10 @@ import { Product } from "@/data/products";
 interface ProductCardProps {
   product: Product;
   onAddToCart: (product: Product) => void;
+  onQuickView?: (product: Product) => void;
 }
 
-export default function ProductCard({ product, onAddToCart }: ProductCardProps) {
+export default function ProductCard({ product, onAddToCart, onQuickView }: ProductCardProps) {
   const discountPercent = product.originalPrice
     ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
     : 0;
@@ -18,7 +19,10 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
   return (
     <div className="group relative bg-white rounded-2xl overflow-hidden border border-stone-200/70 hover:border-luxury-gold/50 transition-all duration-300 hover:shadow-luxury flex flex-col justify-between">
       {/* Product Image & Badges Container */}
-      <div className="relative aspect-square w-full overflow-hidden bg-stone-100">
+      <div
+        onClick={() => onQuickView && onQuickView(product)}
+        className="relative aspect-square w-full overflow-hidden bg-stone-100 cursor-pointer"
+      >
         <Image
           src={product.image}
           alt={product.title}

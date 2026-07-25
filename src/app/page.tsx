@@ -6,6 +6,10 @@ import Navbar from "@/components/Navbar";
 import ProductCard from "@/components/ProductCard";
 import CartDrawer, { CartItem } from "@/components/CartDrawer";
 import PhoneAuthModal from "@/components/PhoneAuthModal";
+import ProductQuickViewModal from "@/components/ProductQuickViewModal";
+import SearchModal from "@/components/SearchModal";
+import TarnishProofGuaranteeBanner from "@/components/TarnishProofGuaranteeBanner";
+import ReviewsSection from "@/components/ReviewsSection";
 import Footer from "@/components/Footer";
 import { PRODUCTS, Product } from "@/data/products";
 import { Sparkles, Shield, Award, ArrowRight, Heart, Star, Check } from "lucide-react";
@@ -15,6 +19,8 @@ export default function Home() {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
   const [userPhone, setUserPhone] = useState<string | null>(null);
 
   // Filter products based on selected category / price filter
@@ -24,17 +30,17 @@ export default function Home() {
     return product.category === activeCategory;
   });
 
-  const handleAddToCart = (product: Product) => {
+  const handleAddToCart = (product: Product, quantity: number = 1) => {
     setCartItems((prev) => {
       const existing = prev.find((item) => item.product.id === product.id);
       if (existing) {
         return prev.map((item) =>
           item.product.id === product.id
-            ? { ...item, quantity: item.quantity + 1 }
+            ? { ...item, quantity: item.quantity + quantity }
             : item
         );
       }
-      return [...prev, { product, quantity: 1 }];
+      return [...prev, { product, quantity }];
     });
     setIsCartOpen(true);
   };
@@ -64,6 +70,7 @@ export default function Home() {
         cartCount={cartItems.reduce((acc, item) => acc + item.quantity, 0)}
         onOpenCart={() => setIsCartOpen(true)}
         onOpenAuth={() => setIsAuthOpen(true)}
+        onOpenSearch={() => setIsSearchOpen(true)}
         userPhone={userPhone}
         activeCategory={activeCategory}
         onSelectCategory={setActiveCategory}
@@ -71,7 +78,7 @@ export default function Home() {
 
       {/* Main Content */}
       <main className="flex-1">
-        {/* Sorele-Style Hero Banner */}
+        {/* Hero Banner */}
         <section className="relative overflow-hidden bg-gradient-to-b from-luxury-cream/80 via-luxury-bg to-luxury-bg py-12 lg:py-20 border-b border-stone-200/60">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
@@ -132,7 +139,7 @@ export default function Home() {
                 <div className="relative w-full max-w-md aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl border-4 border-white">
                   <Image
                     src="https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=1000&q=80"
-                    alt="Shree Mangaladevi Luxury Jewellery Collection"
+                    alt="VERONA Luxury Jewellery Collection by Mangaladevi Jewellers"
                     fill
                     priority
                     className="object-cover object-center"
@@ -153,8 +160,8 @@ export default function Home() {
         </section>
 
         {/* Category Filters Bar */}
-        <section className="py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between mb-6">
+        <section className="py-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between mb-8">
             <div>
               <h2 className="text-2xl sm:text-3xl font-serif font-bold text-stone-900">
                 {activeCategory === "all" && "All Lightweight Jewellery"}
@@ -182,14 +189,21 @@ export default function Home() {
               <ProductCard
                 key={product.id}
                 product={product}
-                onAddToCart={handleAddToCart}
+                onAddToCart={(p) => handleAddToCart(p, 1)}
+                onQuickView={(p) => setQuickViewProduct(p)}
               />
             ))}
           </div>
         </section>
 
-        {/* Sorele-Inspired Gifting Banner */}
-        <section className="my-16 py-12 bg-luxury-charcoal text-white relative overflow-hidden">
+        {/* Tarnish Proof Guarantee Technology Section */}
+        <TarnishProofGuaranteeBanner />
+
+        {/* Customer Social Proof Reviews */}
+        <ReviewsSection />
+
+        {/* Gifting Banner */}
+        <section className="my-16 py-14 bg-luxury-charcoal text-white relative overflow-hidden">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-4 relative z-10">
             <span className="text-xs uppercase tracking-[0.3em] text-luxury-gold font-bold">
               Luxury Gifting Experience
@@ -202,7 +216,7 @@ export default function Home() {
             </p>
             <button
               onClick={() => setActiveCategory("under-999")}
-              className="inline-flex items-center gap-2 px-6 py-3 bg-luxury-gold hover:bg-luxury-goldHover text-white text-xs font-semibold rounded-xl transition-all shadow-md"
+              className="inline-flex items-center gap-2 px-6 py-3.5 bg-luxury-gold hover:bg-luxury-goldHover text-white text-xs font-semibold rounded-xl transition-all shadow-md"
             >
               <span>Explore Giftables Under ₹1,500</span>
               <ArrowRight className="w-4 h-4" />
@@ -230,6 +244,20 @@ export default function Home() {
         isOpen={isAuthOpen}
         onClose={() => setIsAuthOpen(false)}
         onSuccess={(phone) => setUserPhone(phone)}
+      />
+
+      {/* Product Quick View Modal */}
+      <ProductQuickViewModal
+        product={quickViewProduct}
+        onClose={() => setQuickViewProduct(null)}
+        onAddToCart={(product, qty) => handleAddToCart(product, qty)}
+      />
+
+      {/* Search Modal */}
+      <SearchModal
+        isOpen={isSearchOpen}
+        onClose={() => setIsSearchOpen(false)}
+        onSelectProduct={(p) => setQuickViewProduct(p)}
       />
 
       {/* Footer */}

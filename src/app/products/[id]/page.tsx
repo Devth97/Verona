@@ -177,19 +177,9 @@ export default function StandaloneProductPage() {
             </div>
           </div>
 
-          {/* Right Column — Sorele-Style Conversion Purchase Column (Screenshot 4) */}
+          {/* Right Column — Conversion Purchase Column */}
           <div className="lg:col-span-6 space-y-6">
             
-            {/* Sticky Checkout Header Banner matching Sorele.co ("CHECKOUT NOW 💳 >") */}
-            <button
-              onClick={() => handleAddToCart(product, quantity)}
-              className="w-full py-4 bg-black hover:bg-stone-900 text-white font-bold text-sm tracking-widest uppercase rounded-2xl shadow-xl flex items-center justify-center gap-2 transition-all group"
-            >
-              <span>CHECKOUT NOW</span>
-              <span className="text-luxury-gold text-base">💳</span>
-              <ArrowRight className="w-4 h-4 text-luxury-gold group-hover:translate-x-1 transition-transform" />
-            </button>
-
             {/* Title & Rating */}
             <div>
               <h1 className="text-2xl sm:text-3xl font-serif font-bold text-stone-900 leading-tight">

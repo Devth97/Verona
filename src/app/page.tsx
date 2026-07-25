@@ -23,6 +23,7 @@ import GenderCollectionArches from "@/components/GenderCollectionArches";
 import GivaFloatingNav from "@/components/GivaFloatingNav";
 import WhatsAppWidget from "@/components/WhatsAppWidget";
 import BackToTopButton from "@/components/BackToTopButton";
+import ShreeMangaladeviAboutUs from "@/components/ShreeMangaladeviAboutUs";
 import StickyAddToCartBar from "@/components/StickyAddToCartBar";
 import Footer from "@/components/Footer";
 import { PRODUCTS, Product } from "@/data/products";
@@ -273,6 +274,9 @@ export default function Home() {
             </button>
           </div>
         </section>
+
+        {/* Shree Mangaladevi Jewellers Official About Us Section */}
+        <ShreeMangaladeviAboutUs />
       </main>
 
       {/* Floating Widgets & Social Proof */}

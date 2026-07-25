@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { ShieldCheck, Award, Truck, RefreshCw, MapPin, Phone, Mail } from "lucide-react";
+import { ShieldCheck, Award, Truck, RefreshCw, MapPin, Phone, Mail, Instagram } from "lucide-react";
 
 export default function Footer() {
   return (
@@ -43,11 +43,20 @@ export default function Footer() {
             VERONA
           </h3>
           <span className="text-[10px] uppercase tracking-[0.25em] text-luxury-gold font-semibold block -mt-2">
-            BY MANGALADEVI JEWELLERS
+            BY SHREE MANGALADEVI JEWELLERS
           </span>
           <p className="text-xs text-stone-400 leading-relaxed pt-1">
-            Rooted in Mangaluru&apos;s rich heritage, crafting contemporary lightweight jewellery (₹500 – ₹3,500) designed for everyday luxury without tarnish or fading.
+            Rooted in Mangaluru&apos;s rich heritage, crafting gold, silver & platinum ornaments alongside contemporary lightweight everyday luxury (₹500 – ₹3,500).
           </p>
+          <a
+            href="https://instagram.com/shreemangaladevi_jewellers"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 text-xs font-bold text-luxury-gold hover:underline pt-1"
+          >
+            <Instagram className="w-4 h-4" />
+            <span>@shreemangaladevi_jewellers</span>
+          </a>
         </div>
 
         {/* Quick Links */}
@@ -85,7 +94,7 @@ export default function Footer() {
           </h4>
           <p className="flex items-start gap-2">
             <MapPin className="w-4 h-4 text-luxury-gold shrink-0 mt-0.5" />
-            <span>Main Showroom, Hampankatta / Bunder, Mangaluru (Mangalore), Karnataka – 575001</span>
+            <span>Shree Mangaladevi Jewellers, Hampankatta, Opp Clock Tower, Mangalore 575001</span>
           </p>
           <p className="flex items-center gap-2">
             <Phone className="w-4 h-4 text-luxury-gold shrink-0" />
@@ -100,7 +109,7 @@ export default function Footer() {
 
       {/* Copyright */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 border-t border-stone-800 text-center text-[11px] text-stone-500">
-        © {new Date().getFullYear()} VERONA by Mangaladevi Jewellers. All rights reserved. Powered by Shopify Headless & Firebase Auth.
+        © {new Date().getFullYear()} VERONA by Shree Mangaladevi Jewellers. All rights reserved.
       </div>
     </footer>
   );

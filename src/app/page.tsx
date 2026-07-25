@@ -17,6 +17,10 @@ import ReviewsSection from "@/components/ReviewsSection";
 import VeronaWomenReels from "@/components/VeronaWomenReels";
 import HeroSliderBanner from "@/components/HeroSliderBanner";
 import CategoryVisualCards from "@/components/CategoryVisualCards";
+import DealOfTheDayBanner from "@/components/DealOfTheDayBanner";
+import PriceFilterPills from "@/components/PriceFilterPills";
+import GenderCollectionArches from "@/components/GenderCollectionArches";
+import GivaFloatingNav from "@/components/GivaFloatingNav";
 import WhatsAppWidget from "@/components/WhatsAppWidget";
 import BackToTopButton from "@/components/BackToTopButton";
 import StickyAddToCartBar from "@/components/StickyAddToCartBar";
@@ -27,6 +31,8 @@ import { Sparkles, Shield, Award, ArrowRight, Heart, Star, Check, MapPin } from 
 export default function Home() {
   const [activeCategory, setActiveCategory] = useState("all");
   const [activeTab, setActiveTab] = useState<"all" | "everyday" | "office">("all");
+  const [activeMaxPrice, setActiveMaxPrice] = useState<number | null>(null);
+
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [wishlistItems, setWishlistItems] = useState<Product[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -72,7 +78,7 @@ export default function Home() {
     });
   };
 
-  // Filter products based on category & everyday/office tabs
+  // Filter products based on category, price budget, and everyday/office tabs
   const filteredProducts = PRODUCTS.filter((product) => {
     let catMatch = true;
     if (activeCategory === "under-999") catMatch = product.price <= 999;
@@ -82,7 +88,10 @@ export default function Home() {
     if (activeTab === "everyday") tabMatch = product.tag === "everyday";
     else if (activeTab === "office") tabMatch = product.tag === "office";
 
-    return catMatch && tabMatch;
+    let priceMatch = true;
+    if (activeMaxPrice !== null) priceMatch = product.price <= activeMaxPrice;
+
+    return catMatch && tabMatch && priceMatch;
   });
 
   const handleAddToCart = (product: Product, quantity: number = 1) => {
@@ -121,7 +130,7 @@ export default function Home() {
   const totalCartCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
 
   return (
-    <div className="min-h-screen flex flex-col justify-between relative bg-luxury-bg text-luxury-charcoal selection:bg-luxury-goldLight selection:text-luxury-goldHover">
+    <div className="min-h-screen flex flex-col justify-between relative bg-luxury-bg text-luxury-charcoal selection:bg-luxury-goldLight selection:text-luxury-goldHover pb-16 sm:pb-0">
       {/* Header */}
       <Navbar
         cartCount={totalCartCount}
@@ -142,13 +151,29 @@ export default function Home() {
         {/* Full-Width Sorele-Style Hero Slider Banner */}
         <HeroSliderBanner onShopNow={() => handleSelectCategory("all")} />
 
+        {/* GIVA Budget Price Filter Pills (Screenshot 2) */}
+        <PriceFilterPills
+          activePrice={activeMaxPrice}
+          onSelectPrice={(maxPrice) => {
+            setActiveMaxPrice(maxPrice);
+            const element = document.getElementById("products-grid");
+            if (element) element.scrollIntoView({ behavior: "smooth", block: "start" });
+          }}
+        />
+
         {/* Visual Category Cards Grid */}
         <CategoryVisualCards
           activeCategory={activeCategory}
           onSelectCategory={(cat) => handleSelectCategory(cat)}
         />
 
-        {/* Product Collection Grid with ID for smooth scrolling */}
+        {/* GIVA "Deal of the Day" Flash Banner (Screenshot 3) */}
+        <DealOfTheDayBanner onShopDeal={() => handleSelectCategory("all")} />
+
+        {/* GIVA Gender Arch Cards ("Shop for Her" & "Shop for Him") (Screenshot 3) */}
+        <GenderCollectionArches onSelectGender={(cat) => handleSelectCategory(cat)} />
+
+        {/* Product Collection Grid with Smooth Scroll Anchor */}
         <section id="products-grid" className="py-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 scroll-mt-24">
           {/* Tab Switcher matching Sorele.co */}
           <div className="flex justify-center items-center gap-6 mb-8 border-b border-stone-200 pb-3">
@@ -203,7 +228,7 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Product Grid with Hover Image Swap & Percentage Badges */}
+          {/* Product Grid with GIVA Direct Add to Cart & Coupon Callout */}
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
             {filteredProducts.map((product) => (
               <ProductCard
@@ -258,6 +283,13 @@ export default function Home() {
       <BackToTopButton />
       <RecentPurchaseToast />
       <StickyAddToCartBar onOpenCart={() => setIsCartOpen(true)} cartCount={totalCartCount} />
+
+      {/* GIVA Mobile Floating Bottom Navigation Pill (Screenshots 1-4) */}
+      <GivaFloatingNav
+        onOpenStoreLocator={() => setIsStoreLocatorOpen(true)}
+        onSelectCategory={handleSelectCategory}
+        activeCategory={activeCategory}
+      />
 
       {/* Cart Drawer */}
       <CartDrawer

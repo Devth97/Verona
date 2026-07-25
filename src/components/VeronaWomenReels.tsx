@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
-import { Instagram, Heart, Pause, Play, ChevronLeft, ChevronRight } from "lucide-react";
+import { Instagram, Heart, Pause, ChevronLeft, ChevronRight } from "lucide-react";
 
 export interface VeronaWomenCard {
   id: string;
@@ -67,41 +67,74 @@ export const VERONA_WOMEN_CARDS: VeronaWomenCard[] = [
 export default function VeronaWomenReels() {
   const [activeIndex, setActiveIndex] = useState(2);
   const [isPaused, setIsPaused] = useState(false);
+  const touchStartX = useRef<number | null>(null);
 
-  // Auto-slide fisheye gallery every 3.5 seconds matching Sorele.co behavior
+  const totalCards = VERONA_WOMEN_CARDS.length;
+
+  // Circular Wrapping Index Math
+  const getCircularOffset = (idx: number, active: number, total: number) => {
+    let diff = idx - active;
+    if (diff > total / 2) diff -= total;
+    if (diff < -total / 2) diff += total;
+    return diff;
+  };
+
+  // Auto-slide fisheye gallery every 3.5 seconds
   useEffect(() => {
     if (isPaused) return;
 
     const timer = setInterval(() => {
-      setActiveIndex((prev) => (prev + 1) % VERONA_WOMEN_CARDS.length);
+      setActiveIndex((prev) => (prev + 1) % totalCards);
     }, 3500);
 
     return () => clearInterval(timer);
-  }, [isPaused]);
+  }, [isPaused, totalCards]);
 
   const prevSlide = () => {
-    setActiveIndex((prev) => (prev === 0 ? VERONA_WOMEN_CARDS.length - 1 : prev - 1));
+    setActiveIndex((prev) => (prev === 0 ? totalCards - 1 : prev - 1));
   };
 
   const nextSlide = () => {
-    setActiveIndex((prev) => (prev + 1) % VERONA_WOMEN_CARDS.length);
+    setActiveIndex((prev) => (prev + 1) % totalCards);
   };
 
   const handleCardClick = (idx: number) => {
     setActiveIndex(idx);
-    setIsPaused(true); // Pause when user clicks a card to inspect it
+    setIsPaused(true);
+  };
+
+  // Touch Swipe Gesture Support for Mobile
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+    setIsPaused(true);
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX.current === null) return;
+    const touchEndX = e.changedTouches[0].clientX;
+    const deltaX = touchEndX - touchStartX.current;
+
+    if (deltaX < -40) {
+      nextSlide();
+    } else if (deltaX > 40) {
+      prevSlide();
+    }
+
+    touchStartX.current = null;
   };
 
   return (
     <section
-      className="py-16 bg-luxury-cream/20 border-b border-stone-200/80 overflow-hidden"
+      className="py-12 sm:py-16 bg-luxury-cream/20 border-b border-stone-200/80 overflow-hidden select-none"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Header */}
-        <div className="text-center space-y-2 mb-10">
+        <div className="text-center space-y-2 mb-8 sm:mb-12">
           <h2 className="font-cinzel text-3xl sm:text-5xl text-stone-900 tracking-[0.15em] uppercase font-normal">
             VERONA Women
           </h2>
@@ -125,42 +158,42 @@ export default function VeronaWomenReels() {
           </div>
         </div>
 
-        {/* Sorele.co Exact Concave Fisheye Curved Gallery Track (Matching Screenshot 2) */}
+        {/* 21st.dev Style Touch Swiper 3D Curved Arc Container */}
         <div
-          className="relative py-6 flex items-center justify-center h-[460px] sm:h-[540px] overflow-hidden"
-          style={{ perspective: "1200px" }}
+          className="relative py-4 flex items-center justify-center h-[420px] sm:h-[540px] overflow-hidden"
+          style={{ perspective: "1000px" }}
         >
-          <div className="relative w-full max-w-5xl flex justify-center items-center gap-2 sm:gap-4">
+          <div className="relative w-full max-w-5xl flex justify-center items-center">
             {VERONA_WOMEN_CARDS.map((card, idx) => {
-              const offset = idx - activeIndex;
+              const offset = getCircularOffset(idx, activeIndex, totalCards);
               const absOffset = Math.abs(offset);
 
-              // Sorele.co exact concave fisheye arc transformations
+              // 21st.dev Fisheye Arc Transformations for Mobile & Desktop
               let transformStyle = "";
               let opacity = 1;
               let zIndex = 30 - absOffset * 10;
 
               if (offset === 0) {
                 // Active Center Card
-                transformStyle = "scale(1.06) translateZ(0px) rotateY(0deg)";
+                transformStyle = "scale(1.05) translate3d(0, 0, 0) rotateY(0deg)";
               } else if (offset === -1) {
-                // Inner Left Card (curved inwards towards center)
-                transformStyle = "scale(0.93) rotateY(15deg) skewY(-2deg) translateZ(-40px)";
-                opacity = 0.95;
+                // Immediate Left Card
+                transformStyle = "scale(0.88) translate3d(-105%, 0, -40px) rotateY(16deg) skewY(-2deg)";
+                opacity = 0.9;
               } else if (offset === 1) {
-                // Inner Right Card (curved inwards towards center)
-                transformStyle = "scale(0.93) rotateY(-15deg) skewY(2deg) translateZ(-40px)";
-                opacity = 0.95;
+                // Immediate Right Card
+                transformStyle = "scale(0.88) translate3d(105%, 0, -40px) rotateY(-16deg) skewY(2deg)";
+                opacity = 0.9;
               } else if (offset === -2) {
-                // Outer Left Card
-                transformStyle = "scale(0.82) rotateY(24deg) skewY(-4deg) translateZ(-100px)";
-                opacity = 0.7;
+                // Outer Left Card (Desktop only)
+                transformStyle = "scale(0.75) translate3d(-200%, 0, -90px) rotateY(24deg) skewY(-4deg)";
+                opacity = 0.5;
               } else if (offset === 2) {
-                // Outer Right Card
-                transformStyle = "scale(0.82) rotateY(-24deg) skewY(4deg) translateZ(-100px)";
-                opacity = 0.7;
+                // Outer Right Card (Desktop only)
+                transformStyle = "scale(0.75) translate3d(200%, 0, -90px) rotateY(-24deg) skewY(4deg)";
+                opacity = 0.5;
               } else {
-                transformStyle = "scale(0.7) translateZ(-200px)";
+                transformStyle = "scale(0.6) translate3d(0, 0, -200px)";
                 opacity = 0;
               }
 
@@ -168,7 +201,7 @@ export default function VeronaWomenReels() {
                 <div
                   key={card.id}
                   onClick={() => handleCardClick(idx)}
-                  className={`relative w-56 sm:w-72 h-[380px] sm:h-[480px] rounded-3xl overflow-hidden shadow-2xl bg-stone-900 border-4 border-white cursor-pointer transition-all duration-700 ease-out shrink-0 ${
+                  className={`absolute w-[240px] sm:w-72 h-[370px] sm:h-[480px] rounded-3xl overflow-hidden shadow-2xl bg-stone-900 border-4 border-white cursor-pointer transition-all duration-700 ease-out shrink-0 ${
                     absOffset > 2 ? "hidden" : "block"
                   }`}
                   style={{
@@ -182,12 +215,12 @@ export default function VeronaWomenReels() {
                     alt={card.title}
                     fill
                     priority={absOffset <= 1}
-                    sizes="(max-width: 640px) 224px, 288px"
+                    sizes="(max-width: 640px) 240px, 288px"
                     className="object-cover object-center"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
 
-                  {/* Sorele-style Floating Pink Sticker Badge */}
+                  {/* Floating Pink Sticker Badge */}
                   <div className="absolute top-4 left-1/2 -translate-x-1/2 z-20">
                     <span className="px-3.5 py-1 rounded-full bg-rose-950/90 text-rose-200 border border-rose-700/60 text-[10px] font-bold tracking-wider uppercase shadow-lg backdrop-blur-md flex items-center gap-1.5 whitespace-nowrap font-sans">
                       <Heart className="w-3 h-3 text-rose-400 fill-current" />
@@ -212,7 +245,7 @@ export default function VeronaWomenReels() {
           {/* Carousel Control Arrows */}
           <button
             onClick={prevSlide}
-            className="absolute left-2 sm:left-6 top-1/2 -translate-y-1/2 z-40 p-3 bg-white/90 hover:bg-white text-stone-900 rounded-full shadow-xl backdrop-blur-md border border-stone-200 transition-all hover:scale-110"
+            className="absolute left-1 sm:left-6 top-1/2 -translate-y-1/2 z-40 p-2.5 sm:p-3 bg-white/90 hover:bg-white text-stone-900 rounded-full shadow-xl backdrop-blur-md border border-stone-200 transition-all hover:scale-110"
             title="Previous"
           >
             <ChevronLeft className="w-5 h-5" />
@@ -220,7 +253,7 @@ export default function VeronaWomenReels() {
 
           <button
             onClick={nextSlide}
-            className="absolute right-2 sm:right-6 top-1/2 -translate-y-1/2 z-40 p-3 bg-white/90 hover:bg-white text-stone-900 rounded-full shadow-xl backdrop-blur-md border border-stone-200 transition-all hover:scale-110"
+            className="absolute right-1 sm:right-6 top-1/2 -translate-y-1/2 z-40 p-2.5 sm:p-3 bg-white/90 hover:bg-white text-stone-900 rounded-full shadow-xl backdrop-blur-md border border-stone-200 transition-all hover:scale-110"
             title="Next"
           >
             <ChevronRight className="w-5 h-5" />

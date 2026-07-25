@@ -2,8 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import { Sparkles, X, CheckCircle2 } from "lucide-react";
-import { PRODUCTS } from "@/data/products";
+import { X, CheckCircle2 } from "lucide-react";
 
 export interface NotificationItem {
   id: number;
@@ -17,82 +16,95 @@ export interface NotificationItem {
 const SAMPLE_NOTIFICATIONS: NotificationItem[] = [
   {
     id: 1,
-    customerName: "Pooja Hegde",
+    customerName: "Pooja H.",
     location: "Mangaluru",
-    productTitle: "Aura Freshwater Pearl Hoop Earrings",
+    productTitle: "Aura Freshwater Pearl Hoops",
     productImage: "https://images.unsplash.com/photo-1630019852942-f89202989a59?auto=format&fit=crop&w=200&q=80",
-    timeAgo: "4 minutes ago",
+    timeAgo: "4m ago",
   },
   {
     id: 2,
-    customerName: "Ananya Rao",
+    customerName: "Ananya R.",
     location: "Bengaluru",
-    productTitle: "Celeste 18K Gold Solitaire Pendant",
+    productTitle: "Celeste 18K Solitaire Pendant",
     productImage: "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=200&q=80",
-    timeAgo: "12 minutes ago",
+    timeAgo: "12m ago",
   },
   {
     id: 3,
-    customerName: "Shruti Shetty",
+    customerName: "Shruti S.",
     location: "Mumbai",
-    productTitle: "Luna Stackable Pavé Diamond Band Ring",
+    productTitle: "Luna Stackable Pavé Ring",
     productImage: "https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=200&q=80",
-    timeAgo: "18 minutes ago",
+    timeAgo: "18m ago",
   },
 ];
 
 export default function RecentPurchaseToast() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
+  const [isDismissed, setIsDismissed] = useState(false);
 
   useEffect(() => {
-    // Show toast after 4 seconds initial delay
+    if (isDismissed) return;
+
+    // Initial subtle delay of 8 seconds before showing first toast
     const initialTimer = setTimeout(() => {
       setIsVisible(true);
-    }, 4000);
+      // Auto-hide after 3.5 seconds
+      setTimeout(() => setIsVisible(false), 3500);
+    }, 8000);
 
-    // Rotate toast every 12 seconds
+    // Rotate toast subtly every 25 seconds
     const interval = setInterval(() => {
-      setIsVisible(false);
-      setTimeout(() => {
-        setCurrentIndex((prev) => (prev + 1) % SAMPLE_NOTIFICATIONS.length);
-        setIsVisible(true);
-      }, 800);
-    }, 12000);
+      if (isDismissed) return;
+      setCurrentIndex((prev) => (prev + 1) % SAMPLE_NOTIFICATIONS.length);
+      setIsVisible(true);
+      // Auto-hide after 3.5 seconds so it never lingers
+      setTimeout(() => setIsVisible(false), 3500);
+    }, 25000);
 
     return () => {
       clearTimeout(initialTimer);
       clearInterval(interval);
     };
-  }, []);
+  }, [isDismissed]);
 
-  if (!isVisible) return null;
+  if (!isVisible || isDismissed) return null;
 
   const current = SAMPLE_NOTIFICATIONS[currentIndex];
 
   return (
-    <div className="fixed bottom-20 left-6 z-40 max-w-sm bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl border border-stone-200 p-3.5 flex items-center gap-3 animate-in slide-in-from-left-6 duration-500">
+    /* Hidden on mobile (hidden md:flex) to prevent obstructing bottom navigation bar */
+    <div className="hidden md:flex fixed bottom-6 left-6 z-30 max-w-xs bg-white/95 backdrop-blur-md rounded-2xl shadow-xl border border-stone-200/80 p-2.5 items-center gap-2.5 animate-in slide-in-from-left-4 fade-in duration-300">
       {/* Product Thumbnail */}
-      <div className="relative w-12 h-12 rounded-xl overflow-hidden bg-stone-100 shrink-0 border border-stone-200">
+      <div className="relative w-10 h-10 rounded-lg overflow-hidden bg-stone-100 shrink-0 border border-stone-200">
         <Image src={current.productImage} alt={current.productTitle} fill className="object-cover" />
       </div>
 
       {/* Info */}
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-1 text-[10px] uppercase font-bold tracking-wider text-emerald-700">
+      <div className="flex-1 min-w-0 pr-1">
+        <div className="flex items-center gap-1 text-[9px] uppercase font-bold tracking-wider text-emerald-700">
           <CheckCircle2 className="w-3 h-3 text-emerald-600 shrink-0" />
-          <span>Recently Purchased</span>
+          <span>Verified Purchase</span>
         </div>
-        <p className="text-xs font-serif font-bold text-stone-900 truncate mt-0.5">
+        <p className="text-[11px] font-serif font-bold text-stone-900 truncate">
           {current.productTitle}
         </p>
-        <p className="text-[10px] text-stone-500 truncate">
-          Purchased by {current.customerName} ({current.location}) • {current.timeAgo}
+        <p className="text-[9px] text-stone-500 truncate">
+          {current.customerName} ({current.location}) • {current.timeAgo}
         </p>
       </div>
 
-      {/* Dismiss Button */}
-      <button onClick={() => setIsVisible(false)} className="p-1 text-stone-400 hover:text-stone-600">
+      {/* Dismiss Button (Disables toast for entire session) */}
+      <button
+        onClick={() => {
+          setIsVisible(false);
+          setIsDismissed(true);
+        }}
+        className="p-1 text-stone-400 hover:text-stone-700 transition-colors"
+        title="Dismiss"
+      >
         <X className="w-3.5 h-3.5" />
       </button>
     </div>

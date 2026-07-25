@@ -29,6 +29,7 @@ import {
   ChevronUp,
   ShoppingBag,
   ArrowRight,
+  ArrowLeft,
   Heart,
   MessageCircle,
   Sparkles,
@@ -120,13 +121,23 @@ export default function StandaloneProductPage() {
 
       {/* Main Content */}
       <main className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
-        {/* Breadcrumbs */}
-        <div className="flex items-center gap-2 text-xs text-stone-500 mb-6 font-sans">
-          <Link href="/" className="hover:text-luxury-gold">Home</Link>
-          <span>/</span>
-          <span className="capitalize">{product.category}</span>
-          <span>/</span>
-          <span className="text-stone-900 font-semibold truncate">{product.title}</span>
+        {/* Top Back Navigation & Breadcrumbs Bar */}
+        <div className="flex items-center justify-between gap-4 mb-6">
+          <button
+            onClick={() => router.back()}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white border border-stone-300 hover:border-luxury-gold text-stone-800 hover:text-stone-900 text-xs font-bold transition-all shadow-sm group"
+          >
+            <ArrowLeft className="w-4 h-4 text-stone-600 group-hover:-translate-x-1 transition-transform" />
+            <span>Back to Shopping</span>
+          </button>
+
+          <div className="hidden sm:flex items-center gap-2 text-xs text-stone-500 font-sans">
+            <Link href="/" className="hover:text-luxury-gold">Home</Link>
+            <span>/</span>
+            <span className="capitalize">{product.category}</span>
+            <span>/</span>
+            <span className="text-stone-900 font-semibold truncate max-w-xs">{product.title}</span>
+          </div>
         </div>
 
         {/* Product Page Main Grid (Matching Sorele.co PDP Screenshot 4) */}

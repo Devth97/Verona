@@ -9,6 +9,8 @@ import ProductQuickViewModal from "@/components/ProductQuickViewModal";
 import SearchModal from "@/components/SearchModal";
 import StoreLocatorModal from "@/components/StoreLocatorModal";
 import WishlistDrawer from "@/components/WishlistDrawer";
+import RingSizeFinderModal from "@/components/RingSizeFinderModal";
+import RecentPurchaseToast from "@/components/RecentPurchaseToast";
 import FaqAccordion from "@/components/FaqAccordion";
 import TarnishProofGuaranteeBanner from "@/components/TarnishProofGuaranteeBanner";
 import ReviewsSection from "@/components/ReviewsSection";
@@ -32,6 +34,7 @@ export default function Home() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isStoreLocatorOpen, setIsStoreLocatorOpen] = useState(false);
   const [isWishlistOpen, setIsWishlistOpen] = useState(false);
+  const [isRingSizeFinderOpen, setIsRingSizeFinderOpen] = useState(false);
   const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
   const [userPhone, setUserPhone] = useState<string | null>(null);
 
@@ -60,12 +63,10 @@ export default function Home() {
 
   // Filter products based on category & everyday/office tabs
   const filteredProducts = PRODUCTS.filter((product) => {
-    // Category check
     let catMatch = true;
     if (activeCategory === "under-999") catMatch = product.price <= 999;
     else if (activeCategory !== "all") catMatch = product.category === activeCategory;
 
-    // Tab check (Everyday Wear / Office Wear)
     let tabMatch = true;
     if (activeTab === "everyday") tabMatch = product.tag === "everyday";
     else if (activeTab === "office") tabMatch = product.tag === "office";
@@ -119,6 +120,7 @@ export default function Home() {
         onOpenAuth={() => setIsAuthOpen(true)}
         onOpenSearch={() => setIsSearchOpen(true)}
         onOpenStoreLocator={() => setIsStoreLocatorOpen(true)}
+        onOpenRingSizeFinder={() => setIsRingSizeFinderOpen(true)}
         userPhone={userPhone}
         activeCategory={activeCategory}
         onSelectCategory={setActiveCategory}
@@ -126,19 +128,18 @@ export default function Home() {
 
       {/* Main Content */}
       <main className="flex-1">
-        {/* Full-Width Sorele-Style Hero Slider Banner (Screenshot 1) */}
+        {/* Full-Width Sorele-Style Hero Slider Banner */}
         <HeroSliderBanner onShopNow={() => setActiveCategory("all")} />
 
-        {/* Visual Category Cards Grid (Screenshot 2) */}
+        {/* Visual Category Cards Grid */}
         <CategoryVisualCards
           activeCategory={activeCategory}
           onSelectCategory={(cat) => setActiveCategory(cat)}
         />
 
-        {/* Product Collection Grid with Everyday Wear / Office Wear Tab Switcher (Screenshot 2 & 3) */}
+        {/* Product Collection Grid with Everyday Wear / Office Wear Tab Switcher */}
         <section className="py-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          
-          {/* Tab Switcher matching Sorele.co (EVERYDAY WEAR | OFFICE WEAR) */}
+          {/* Tab Switcher matching Sorele.co */}
           <div className="flex justify-center items-center gap-6 mb-8 border-b border-stone-200 pb-3">
             <button
               onClick={() => setActiveTab("all")}
@@ -191,7 +192,7 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Product Grid with Hover Image Swap & Percentage Badges (Screenshot 3) */}
+          {/* Product Grid with Hover Image Swap & Percentage Badges */}
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
             {filteredProducts.map((product) => (
               <ProductCard
@@ -241,9 +242,10 @@ export default function Home() {
         </section>
       </main>
 
-      {/* Floating Sorele-Style Widgets */}
+      {/* Floating Widgets & Social Proof */}
       <WhatsAppWidget />
       <BackToTopButton />
+      <RecentPurchaseToast />
       <StickyAddToCartBar onOpenCart={() => setIsCartOpen(true)} cartCount={totalCartCount} />
 
       {/* Cart Drawer */}
@@ -267,6 +269,12 @@ export default function Home() {
         wishlistItems={wishlistItems}
         onRemoveWishlist={(id) => setWishlistItems((prev) => prev.filter((p) => p.id !== id))}
         onAddToCart={(product) => handleAddToCart(product, 1)}
+      />
+
+      {/* Ring Size Finder Modal */}
+      <RingSizeFinderModal
+        isOpen={isRingSizeFinderOpen}
+        onClose={() => setIsRingSizeFinderOpen(false)}
       />
 
       {/* Flagship Store Locator Modal */}

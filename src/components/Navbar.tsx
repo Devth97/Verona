@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
-import { Search, ShoppingBag, User, Heart, Menu, X, Sparkles, ShieldCheck } from "lucide-react";
+import { Search, ShoppingBag, User, Heart, Menu, X, Sparkles, ShieldCheck, HelpCircle } from "lucide-react";
+import CurrencySwitcher from "@/components/CurrencySwitcher";
 
 interface NavbarProps {
   cartCount: number;
@@ -11,6 +12,7 @@ interface NavbarProps {
   onOpenAuth: () => void;
   onOpenSearch?: () => void;
   onOpenStoreLocator?: () => void;
+  onOpenRingSizeFinder?: () => void;
   userPhone: string | null;
   activeCategory: string;
   onSelectCategory: (cat: string) => void;
@@ -24,6 +26,7 @@ export default function Navbar({
   onOpenAuth,
   onOpenSearch,
   onOpenStoreLocator,
+  onOpenRingSizeFinder,
   userPhone,
   activeCategory,
   onSelectCategory,
@@ -43,11 +46,18 @@ export default function Navbar({
   return (
     <header className="sticky top-0 z-40 bg-luxury-bg/95 backdrop-blur-md border-b border-stone-200/80">
       {/* Announcement Bar */}
-      <div className="bg-luxury-charcoal text-white text-[11px] font-medium py-2 px-4 text-center tracking-widest flex items-center justify-center gap-2 overflow-hidden">
-        <Sparkles className="w-3.5 h-3.5 text-luxury-gold animate-pulse shrink-0" />
-        <span className="truncate">
-          100% WATERPROOF & TARNISH-FREE • FREE SHIPPING OVER ₹999 • COD AVAILABLE
-        </span>
+      <div className="bg-luxury-charcoal text-white text-[11px] font-medium py-2 px-4 tracking-widest flex items-center justify-between overflow-hidden max-w-7xl mx-auto">
+        <div className="flex items-center gap-2 mx-auto sm:mx-0">
+          <Sparkles className="w-3.5 h-3.5 text-luxury-gold animate-pulse shrink-0" />
+          <span className="truncate">
+            100% WATERPROOF & TARNISH-FREE • FREE EXPRESS SHIPPING OVER ₹999
+          </span>
+        </div>
+
+        {/* Currency Switcher */}
+        <div className="hidden sm:block">
+          <CurrencySwitcher />
+        </div>
       </div>
 
       {/* Main Header */}
@@ -79,6 +89,12 @@ export default function Navbar({
             className="text-luxury-goldHover font-bold hover:underline py-1 flex items-center gap-1"
           >
             <span>Store Locations</span>
+          </button>
+          <button
+            onClick={onOpenRingSizeFinder}
+            className="text-stone-700 hover:text-luxury-gold py-1 flex items-center gap-1"
+          >
+            <span>Ring Size Guide</span>
           </button>
           {categories.map((cat) => (
             <button

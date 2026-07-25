@@ -20,7 +20,7 @@ export const HERO_SLIDES: SlideItem[] = [
     title: "EFFORTLESS EVERY DAY",
     italicSubtitle: "Easy to Wear. Easy to Love",
     subHeadline: "Jewellery that slips into your routine and elevates every look.",
-    image: "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=1600&q=80",
+    image: "/images/celeste_solitaire_pendant_1784974551066.jpg",
     ctaText: "SHOP NOW",
     badge: "NEW SUMMER 2026 EDIT",
   },
@@ -29,7 +29,7 @@ export const HERO_SLIDES: SlideItem[] = [
     title: "WATERPROOF & TARNISH-FREE",
     italicSubtitle: "Shower, Swim, Workout.",
     subHeadline: "18K Gold Plated & 925 Silver engineered for 24/7 daily wear under ₹3,500.",
-    image: "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?auto=format&fit=crop&w=1600&q=80",
+    image: "/images/anti_tarnish_waterproof_model_1784973400042.jpg",
     ctaText: "EXPLORE COLLECTION",
     badge: "100% TARNISH GUARANTEE",
   },
@@ -38,7 +38,7 @@ export const HERO_SLIDES: SlideItem[] = [
     title: "LUXURY GIFTING EXPERIENCE",
     italicSubtitle: "Delivered in Velvet Pouches.",
     subHeadline: "Includes microfiber polishing cloth & custom personalized note card.",
-    image: "https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=1600&q=80",
+    image: "/images/pvd_gold_craftsmanship_1784973415910.jpg",
     ctaText: "DISCOVER GIFTS",
     badge: "SIGNATURE PACKAGING",
   },
@@ -80,36 +80,40 @@ export default function HeroSliderBanner({ onShopNow }: HeroSliderBannerProps) {
           className="object-cover object-center scale-105 transition-transform duration-10000"
         />
         {/* Soft Luxury Overlay matching Sorele.co */}
-        <div className="absolute inset-0 bg-gradient-to-r from-luxury-cream/90 via-luxury-cream/70 to-transparent lg:via-luxury-cream/50" />
+        <div className="absolute inset-0 bg-gradient-to-r from-luxury-cream/95 via-luxury-cream/80 to-transparent lg:via-luxury-cream/60" />
       </div>
 
       {/* Content Container */}
-      <div className="relative max-w-7xl mx-auto h-full px-4 sm:px-6 lg:px-8 flex flex-col justify-center items-start z-10">
-        <div className="max-w-xl space-y-4 text-left animate-in fade-in slide-in-from-left-4 duration-700">
+      <div className="relative max-w-7xl mx-auto h-full px-4 sm:px-6 lg:px-8 flex flex-col justify-center items-center text-center z-10">
+        <div className="max-w-2xl space-y-4 animate-in fade-in duration-700">
           {/* Badge */}
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/90 backdrop-blur-md border border-luxury-gold/40 text-luxury-goldHover text-[11px] font-bold tracking-widest uppercase shadow-sm">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/90 backdrop-blur-md border border-luxury-gold/40 text-luxury-goldHover text-[10px] font-bold tracking-widest uppercase shadow-sm">
             <Sparkles className="w-3.5 h-3.5 text-luxury-gold" />
             <span>{slide.badge}</span>
           </div>
 
-          {/* Main Headline */}
-          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-serif font-bold text-stone-900 leading-[1.1] tracking-tight">
+          {/* Main Headline (Cinzel Thin Luxury Serif matching Sorele.co screenshot) */}
+          <h1 className="font-cinzel text-3xl sm:text-5xl lg:text-6xl text-stone-900 tracking-[0.18em] uppercase font-normal leading-tight">
             {slide.title}
           </h1>
 
-          {/* Subtitle */}
-          <p className="text-base sm:text-xl font-serif italic text-stone-700">
-            {slide.subHeadline} <span className="block font-normal font-sans text-stone-600 text-sm mt-1">{slide.italicSubtitle}</span>
+          {/* Sub-headline */}
+          <p className="font-sans text-stone-700 text-sm sm:text-base tracking-wide font-normal max-w-lg mx-auto">
+            {slide.subHeadline}
           </p>
 
-          {/* CTA Button */}
-          <div className="pt-4">
+          {/* Cursive Script Subtitle matching Sorele.co ("Easy to Wear. Easy to Love") */}
+          <span className="font-script text-3xl sm:text-5xl text-stone-800 tracking-wider font-normal block pt-1 pb-2">
+            {slide.italicSubtitle}
+          </span>
+
+          {/* Sorele-style Underlined CTA */}
+          <div className="pt-2">
             <button
               onClick={onShopNow}
-              className="group relative inline-flex items-center gap-2 px-8 py-4 bg-luxury-charcoal hover:bg-black text-white text-xs uppercase tracking-[0.25em] font-bold rounded-xl transition-all shadow-xl hover:shadow-2xl"
+              className="font-cinzel text-xs sm:text-sm tracking-[0.3em] font-bold text-stone-900 border-b-2 border-stone-900 hover:border-luxury-gold hover:text-luxury-gold transition-all pb-1 uppercase inline-block cursor-pointer"
             >
-              <span>{slide.ctaText}</span>
-              <span className="w-5 h-0.5 bg-luxury-gold group-hover:w-7 transition-all" />
+              {slide.ctaText}
             </button>
           </div>
         </div>

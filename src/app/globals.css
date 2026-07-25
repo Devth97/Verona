@@ -61,3 +61,11 @@
 .animate-marquee:hover {
   animation-play-state: paused;
 }
+
+.font-cinzel {
+  font-family: 'Cinzel', 'Cormorant Garamond', Georgia, serif;
+}
+
+.font-script {
+  font-family: 'Great Vibes', 'Playfair Display', cursive, serif;
+}

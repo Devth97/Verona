@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Navbar from "@/components/Navbar";
 import ProductCard from "@/components/ProductCard";
@@ -8,6 +8,9 @@ import CartDrawer, { CartItem } from "@/components/CartDrawer";
 import PhoneAuthModal from "@/components/PhoneAuthModal";
 import ProductQuickViewModal from "@/components/ProductQuickViewModal";
 import SearchModal from "@/components/SearchModal";
+import StoreLocatorModal from "@/components/StoreLocatorModal";
+import WishlistDrawer from "@/components/WishlistDrawer";
+import FaqAccordion from "@/components/FaqAccordion";
 import TarnishProofGuaranteeBanner from "@/components/TarnishProofGuaranteeBanner";
 import ReviewsSection from "@/components/ReviewsSection";
 import VeronaWomenReels from "@/components/VeronaWomenReels";
@@ -16,16 +19,42 @@ import BackToTopButton from "@/components/BackToTopButton";
 import StickyAddToCartBar from "@/components/StickyAddToCartBar";
 import Footer from "@/components/Footer";
 import { PRODUCTS, Product } from "@/data/products";
-import { Sparkles, Shield, Award, ArrowRight, Heart, Star, Check } from "lucide-react";
+import { Sparkles, Shield, Award, ArrowRight, Heart, Star, Check, MapPin } from "lucide-react";
 
 export default function Home() {
   const [activeCategory, setActiveCategory] = useState("all");
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [wishlistItems, setWishlistItems] = useState<Product[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isStoreLocatorOpen, setIsStoreLocatorOpen] = useState(false);
+  const [isWishlistOpen, setIsWishlistOpen] = useState(false);
   const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
   const [userPhone, setUserPhone] = useState<string | null>(null);
+
+  // Load wishlist from LocalStorage on mount
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("verona_wishlist");
+      if (saved) setWishlistItems(JSON.parse(saved));
+    } catch (e) {
+      console.error("Failed to load wishlist", e);
+    }
+  }, []);
+
+  const handleToggleWishlist = (product: Product) => {
+    setWishlistItems((prev) => {
+      const exists = prev.some((p) => p.id === product.id);
+      const updated = exists ? prev.filter((p) => p.id !== product.id) : [...prev, product];
+      try {
+        localStorage.setItem("verona_wishlist", JSON.stringify(updated));
+      } catch (e) {
+        console.error("Failed to save wishlist", e);
+      }
+      return updated;
+    });
+  };
 
   // Filter products based on selected category / price filter
   const filteredProducts = PRODUCTS.filter((product) => {
@@ -74,9 +103,12 @@ export default function Home() {
       {/* Header */}
       <Navbar
         cartCount={totalCartCount}
+        wishlistCount={wishlistItems.length}
         onOpenCart={() => setIsCartOpen(true)}
+        onOpenWishlist={() => setIsWishlistOpen(true)}
         onOpenAuth={() => setIsAuthOpen(true)}
         onOpenSearch={() => setIsSearchOpen(true)}
+        onOpenStoreLocator={() => setIsStoreLocatorOpen(true)}
         userPhone={userPhone}
         activeCategory={activeCategory}
         onSelectCategory={setActiveCategory}
@@ -116,9 +148,12 @@ export default function Home() {
                     <Award className="w-4 h-4 text-luxury-gold" />
                     <span>Hypoallergenic 925 Silver</span>
                   </div>
-                  <div className="flex items-center gap-1.5 bg-white/80 px-3 py-1.5 rounded-lg border border-stone-200">
-                    <Check className="w-4 h-4 text-emerald-600" />
-                    <span>COD Available</span>
+                  <div
+                    onClick={() => setIsStoreLocatorOpen(true)}
+                    className="flex items-center gap-1.5 bg-luxury-goldLight hover:bg-luxury-cream text-luxury-goldHover px-3 py-1.5 rounded-lg border border-luxury-gold/40 cursor-pointer transition-colors"
+                  >
+                    <MapPin className="w-4 h-4 text-luxury-gold" />
+                    <span>Visit Mangaluru Store</span>
                   </div>
                 </div>
 
@@ -197,19 +232,24 @@ export default function Home() {
                 product={product}
                 onAddToCart={(p) => handleAddToCart(p, 1)}
                 onQuickView={(p) => setQuickViewProduct(p)}
+                isWishlisted={wishlistItems.some((w) => w.id === product.id)}
+                onToggleWishlist={handleToggleWishlist}
               />
             ))}
           </div>
         </section>
 
-        {/* VERONA Women Video Reels Showcase (Sorele Women Style) */}
+        {/* VERONA Women Video Reels Showcase */}
         <VeronaWomenReels />
 
-        {/* Tarnish Proof Guarantee Technology Section */}
+        {/* Technical Tarnish Proof Guarantee */}
         <TarnishProofGuaranteeBanner />
 
         {/* Customer Social Proof Reviews */}
         <ReviewsSection />
+
+        {/* FAQ Accordion */}
+        <FaqAccordion />
 
         {/* Gifting Banner */}
         <section className="my-16 py-14 bg-luxury-charcoal text-white relative overflow-hidden">
@@ -251,6 +291,21 @@ export default function Home() {
           setIsAuthOpen(true);
         }}
         userPhone={userPhone}
+      />
+
+      {/* Wishlist Drawer */}
+      <WishlistDrawer
+        isOpen={isWishlistOpen}
+        onClose={() => setIsWishlistOpen(false)}
+        wishlistItems={wishlistItems}
+        onRemoveWishlist={(id) => setWishlistItems((prev) => prev.filter((p) => p.id !== id))}
+        onAddToCart={(product) => handleAddToCart(product, 1)}
+      />
+
+      {/* Flagship Store Locator Modal */}
+      <StoreLocatorModal
+        isOpen={isStoreLocatorOpen}
+        onClose={() => setIsStoreLocatorOpen(false)}
       />
 
       {/* Firebase Phone Auth Modal */}

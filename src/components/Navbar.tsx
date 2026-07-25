@@ -5,9 +5,12 @@ import { Search, ShoppingBag, User, Heart, Menu, X, Sparkles, ShieldCheck } from
 
 interface NavbarProps {
   cartCount: number;
+  wishlistCount?: number;
   onOpenCart: () => void;
+  onOpenWishlist?: () => void;
   onOpenAuth: () => void;
   onOpenSearch?: () => void;
+  onOpenStoreLocator?: () => void;
   userPhone: string | null;
   activeCategory: string;
   onSelectCategory: (cat: string) => void;
@@ -15,9 +18,12 @@ interface NavbarProps {
 
 export default function Navbar({
   cartCount,
+  wishlistCount = 0,
   onOpenCart,
+  onOpenWishlist,
   onOpenAuth,
   onOpenSearch,
+  onOpenStoreLocator,
   userPhone,
   activeCategory,
   onSelectCategory,
@@ -67,7 +73,13 @@ export default function Navbar({
         </div>
 
         {/* Desktop Navigation Links */}
-        <nav className="hidden lg:flex items-center space-x-6 text-xs uppercase tracking-wider font-medium text-stone-700">
+        <nav className="hidden lg:flex items-center space-x-5 text-xs uppercase tracking-wider font-medium text-stone-700">
+          <button
+            onClick={onOpenStoreLocator}
+            className="text-luxury-goldHover font-bold hover:underline py-1 flex items-center gap-1"
+          >
+            <span>Store Locations</span>
+          </button>
           {categories.map((cat) => (
             <button
               key={cat.id}
@@ -95,6 +107,20 @@ export default function Navbar({
             title="Search Jewellery"
           >
             <Search className="w-5 h-5" />
+          </button>
+
+          {/* Wishlist Icon */}
+          <button
+            onClick={onOpenWishlist}
+            className="relative p-2 text-stone-700 hover:text-luxury-gold transition-colors"
+            title="Wishlist"
+          >
+            <Heart className="w-5 h-5" />
+            {wishlistCount > 0 && (
+              <span className="absolute top-0 right-0 w-4 h-4 bg-luxury-gold text-white text-[9px] font-bold rounded-full flex items-center justify-center">
+                {wishlistCount}
+              </span>
+            )}
           </button>
 
           {/* User Account / Auth Button */}

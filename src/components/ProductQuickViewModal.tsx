@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import Image from "next/image";
 import { X, Star, ShieldCheck, ShoppingBag, Heart, Droplets, Sparkles, Truck, Check } from "lucide-react";
 import { Product } from "@/data/products";
+import PincodeDeliveryChecker from "@/components/PincodeDeliveryChecker";
 
 interface ProductQuickViewModalProps {
   product: Product | null;
@@ -130,8 +131,13 @@ export default function ProductQuickViewModal({
                 {product.description}
               </p>
 
+              {/* Pincode Estimator */}
+              <div className="pt-3">
+                <PincodeDeliveryChecker />
+              </div>
+
               {/* Guarantee Pills */}
-              <div className="space-y-2 pt-4">
+              <div className="space-y-2 pt-3">
                 <div className="flex items-center gap-2 text-xs font-medium text-stone-800">
                   <ShieldCheck className="w-4 h-4 text-luxury-gold shrink-0" />
                   <span>{product.material}</span>
@@ -139,10 +145,6 @@ export default function ProductQuickViewModal({
                 <div className="flex items-center gap-2 text-xs font-medium text-stone-800">
                   <Droplets className="w-4 h-4 text-cyan-600 shrink-0" />
                   <span>100% Waterproof, Sweatproof & Gym-Proof</span>
-                </div>
-                <div className="flex items-center gap-2 text-xs font-medium text-stone-800">
-                  <Truck className="w-4 h-4 text-stone-700 shrink-0" />
-                  <span>Dispatched in 24 Hours • COD Available</span>
                 </div>
               </div>
             </div>

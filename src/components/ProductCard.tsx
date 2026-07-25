@@ -9,9 +9,17 @@ interface ProductCardProps {
   product: Product;
   onAddToCart: (product: Product) => void;
   onQuickView?: (product: Product) => void;
+  isWishlisted?: boolean;
+  onToggleWishlist?: (product: Product) => void;
 }
 
-export default function ProductCard({ product, onAddToCart, onQuickView }: ProductCardProps) {
+export default function ProductCard({
+  product,
+  onAddToCart,
+  onQuickView,
+  isWishlisted = false,
+  onToggleWishlist,
+}: ProductCardProps) {
   const discountPercent = product.originalPrice
     ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
     : 0;
@@ -30,6 +38,22 @@ export default function ProductCard({ product, onAddToCart, onQuickView }: Produ
           sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
           className="object-cover object-center group-hover:scale-105 transition-transform duration-500"
         />
+
+        {/* Wishlist Heart Icon */}
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            if (onToggleWishlist) onToggleWishlist(product);
+          }}
+          className="absolute top-3 right-3 z-20 p-2 rounded-full bg-white/80 backdrop-blur-md text-stone-700 hover:text-red-500 transition-colors shadow-sm"
+          title="Add to Wishlist"
+        >
+          <Heart
+            className={`w-4 h-4 transition-colors ${
+              isWishlisted ? "fill-red-500 text-red-500" : "text-stone-600"
+            }`}
+          />
+        </button>
 
         {/* Top Badges */}
         <div className="absolute top-3 left-3 flex flex-col gap-1 z-10">

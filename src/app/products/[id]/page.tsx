@@ -252,8 +252,8 @@ export default function StandaloneProductPage() {
             </div>
 
             {/* Quantity & Add to Cart Controls */}
-            <div className="flex items-center gap-3 pt-2">
-              <div className="flex items-center border border-stone-300 rounded-xl bg-stone-50 p-1">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2">
+              <div className="flex items-center justify-between border border-stone-300 rounded-xl bg-stone-50 p-1 sm:w-auto">
                 <button
                   onClick={() => setQuantity((q) => Math.max(1, q - 1))}
                   className="w-10 h-10 flex items-center justify-center text-stone-700 hover:bg-white rounded-lg font-bold text-base"
@@ -269,21 +269,23 @@ export default function StandaloneProductPage() {
                 </button>
               </div>
 
-              <button
-                onClick={() => handleAddToCart(product, quantity)}
-                className="flex-1 py-4 bg-luxury-charcoal hover:bg-black text-white font-semibold rounded-xl transition-all shadow-md flex items-center justify-center gap-2 text-sm"
-              >
-                <ShoppingBag className="w-4 h-4 text-luxury-gold" />
-                <span>Add {quantity} to Bag • ₹{(product.price * quantity).toLocaleString("en-IN")}</span>
-              </button>
+              <div className="flex items-center gap-2 flex-1">
+                <button
+                  onClick={() => handleAddToCart(product, quantity)}
+                  className="flex-1 py-3.5 sm:py-4 bg-luxury-charcoal hover:bg-black text-white font-bold rounded-xl transition-all shadow-md flex items-center justify-center gap-2 text-xs sm:text-sm whitespace-nowrap"
+                >
+                  <ShoppingBag className="w-4 h-4 text-luxury-gold shrink-0" />
+                  <span>Add {quantity} to Bag • ₹{(product.price * quantity).toLocaleString("en-IN")}</span>
+                </button>
 
-              <button
-                onClick={() => handleToggleWishlist(product)}
-                className="p-4 bg-white border border-stone-300 rounded-xl text-stone-700 hover:text-red-500 transition-colors"
-                title="Wishlist"
-              >
-                <Heart className={`w-5 h-5 ${wishlistItems.some((w) => w.id === product.id) ? "fill-red-500 text-red-500" : ""}`} />
-              </button>
+                <button
+                  onClick={() => handleToggleWishlist(product)}
+                  className="p-3.5 sm:p-4 bg-white border border-stone-300 rounded-xl text-stone-700 hover:text-red-500 transition-colors shrink-0"
+                  title="Wishlist"
+                >
+                  <Heart className={`w-5 h-5 ${wishlistItems.some((w) => w.id === product.id) ? "fill-red-500 text-red-500" : ""}`} />
+                </button>
+              </div>
             </div>
 
             {/* Pincode Estimator */}

@@ -167,9 +167,6 @@ export default function Home() {
           onSelectCategory={(cat) => handleSelectCategory(cat)}
         />
 
-        {/* GIVA "Deal of the Day" Flash Banner (Screenshot 3) */}
-        <DealOfTheDayBanner onShopDeal={() => handleSelectCategory("all")} />
-
         {/* GIVA Gender Arch Cards ("Shop for Her" & "Shop for Him") (Screenshot 3) */}
         <GenderCollectionArches onSelectGender={(cat) => handleSelectCategory(cat)} />
 

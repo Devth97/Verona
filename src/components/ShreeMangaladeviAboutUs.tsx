@@ -25,11 +25,21 @@ export default function ShreeMangaladeviAboutUs() {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/30" />
               
-              {/* Overlay Location Pill */}
-              <div className="absolute bottom-4 left-4 right-4 p-4 rounded-2xl bg-black/75 backdrop-blur-md border border-stone-700/80 space-y-1">
-                <div className="flex items-center gap-2 text-luxury-gold text-xs font-bold uppercase tracking-wider">
-                  <MapPin className="w-4 h-4 shrink-0" />
-                  <span>Flagship Showroom</span>
+              {/* Overlay Location Pill with Direct Google Maps Link */}
+              <div className="absolute bottom-4 left-4 right-4 p-4 rounded-2xl bg-black/80 backdrop-blur-md border border-stone-700/80 space-y-2">
+                <div className="flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-2 text-luxury-gold text-xs font-bold uppercase tracking-wider">
+                    <MapPin className="w-4 h-4 shrink-0" />
+                    <span>Flagship Showroom</span>
+                  </div>
+                  <a
+                    href="https://www.google.com/maps/place/SHREE+MANGALADEVI+JEWELLERS,+Hampankatta,+Mangaluru,+Karnataka+575001/data=!4m2!3m1!1s0x3ba35a4d45d9236d:0xf5fe163198e9cb31"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[10px] font-bold text-luxury-gold hover:underline bg-stone-900 px-2.5 py-1 rounded-md border border-luxury-gold/40 shrink-0"
+                  >
+                    Open Map 📍
+                  </a>
                 </div>
                 <p className="text-xs text-stone-300 font-sans leading-snug">
                   Hampankatta, Opp Clock Tower, Mangalore 575001

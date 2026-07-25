@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import { ChevronLeft, ChevronRight, Instagram, Sparkles, Heart } from "lucide-react";
+import { ChevronLeft, ChevronRight, Instagram, Sparkles, Heart, Pause, Play } from "lucide-react";
 
 export interface VeronaWomenCard {
   id: string;
@@ -52,6 +52,18 @@ export const VERONA_WOMEN_CARDS: VeronaWomenCard[] = [
 
 export default function VeronaWomenReels() {
   const [activeIndex, setActiveIndex] = useState(2);
+  const [isPaused, setIsPaused] = useState(false);
+
+  // Auto-rotate 3D carousel every 3 seconds like Sorele.co unless paused
+  useEffect(() => {
+    if (isPaused) return;
+
+    const timer = setInterval(() => {
+      setActiveIndex((prev) => (prev + 1) % VERONA_WOMEN_CARDS.length);
+    }, 3000);
+
+    return () => clearInterval(timer);
+  }, [isPaused]);
 
   const prevSlide = () => {
     setActiveIndex((prev) => (prev === 0 ? VERONA_WOMEN_CARDS.length - 1 : prev - 1));
@@ -61,24 +73,48 @@ export default function VeronaWomenReels() {
     setActiveIndex((prev) => (prev + 1) % VERONA_WOMEN_CARDS.length);
   };
 
+  const handleCardClick = (idx: number) => {
+    if (activeIndex === idx) {
+      // Toggle pause when clicking active center card
+      setIsPaused(!isPaused);
+    } else {
+      setActiveIndex(idx);
+      setIsPaused(true); // Pause when user clicks a specific image to inspect
+    }
+  };
+
   return (
-    <section className="py-16 bg-luxury-cream/20 border-b border-stone-200/80 overflow-hidden">
+    <section
+      className="py-16 bg-luxury-cream/20 border-b border-stone-200/80 overflow-hidden"
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Header */}
-        <div className="text-center space-y-2 mb-12">
+        <div className="text-center space-y-2 mb-10">
           <h2 className="font-cinzel text-3xl sm:text-5xl text-stone-900 tracking-[0.15em] uppercase font-normal">
             VERONA Women
           </h2>
-          <a
-            href="https://instagram.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 text-xs font-bold tracking-[0.25em] text-stone-500 hover:text-luxury-gold uppercase transition-colors"
-          >
-            <Instagram className="w-4 h-4 text-luxury-gold" />
-            <span>FOLLOW @VERONA.JEWELLERY</span>
-          </a>
+          <div className="flex items-center justify-center gap-3">
+            <a
+              href="https://instagram.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 text-xs font-bold tracking-[0.25em] text-stone-500 hover:text-luxury-gold uppercase transition-colors"
+            >
+              <Instagram className="w-4 h-4 text-luxury-gold" />
+              <span>FOLLOW @VERONA.JEWELLERY</span>
+            </a>
+
+            {/* Pause Status Indicator */}
+            {isPaused && (
+              <span className="inline-flex items-center gap-1 text-[10px] uppercase font-bold tracking-wider text-rose-700 bg-rose-50 px-2.5 py-0.5 rounded-full border border-rose-200 animate-pulse">
+                <Pause className="w-3 h-3 text-rose-600 fill-current" />
+                <span>Paused</span>
+              </span>
+            )}
+          </div>
         </div>
 
         {/* 21st.dev Style 3D Perspective Fisheye Curved Carousel (Matching Sorele.co Screenshot 1) */}
@@ -98,19 +134,19 @@ export default function VeronaWomenReels() {
                 transformStyle = "scale(1.05) translateZ(0px) rotateY(0deg)";
               } else if (offset === -1) {
                 // Immediate left card - curved inwards
-                transformStyle = "scale(0.92) rotateY(16deg) skewY(-3deg) translateZ(-40px)";
+                transformStyle = "scale(0.92) rotateY(18deg) skewY(-3deg) translateZ(-40px)";
                 opacity = 0.95;
               } else if (offset === 1) {
                 // Immediate right card - curved inwards
-                transformStyle = "scale(0.92) rotateY(-16deg) skewY(3deg) translateZ(-40px)";
+                transformStyle = "scale(0.92) rotateY(-18deg) skewY(3deg) translateZ(-40px)";
                 opacity = 0.95;
               } else if (offset === -2) {
                 // Far left card
-                transformStyle = "scale(0.8) rotateY(26deg) skewY(-5deg) translateZ(-100px)";
+                transformStyle = "scale(0.8) rotateY(28deg) skewY(-5deg) translateZ(-100px)";
                 opacity = 0.6;
               } else if (offset === 2) {
                 // Far right card
-                transformStyle = "scale(0.8) rotateY(-26deg) skewY(5deg) translateZ(-100px)";
+                transformStyle = "scale(0.8) rotateY(-28deg) skewY(5deg) translateZ(-100px)";
                 opacity = 0.6;
               } else {
                 transformStyle = "scale(0.7) translateZ(-200px)";
@@ -120,7 +156,7 @@ export default function VeronaWomenReels() {
               return (
                 <div
                   key={card.id}
-                  onClick={() => setActiveIndex(idx)}
+                  onClick={() => handleCardClick(idx)}
                   className={`relative w-56 sm:w-72 h-[380px] sm:h-[460px] rounded-3xl overflow-hidden shadow-2xl bg-stone-900 border-4 border-white cursor-pointer transition-all duration-700 ease-out shrink-0 ${
                     absOffset > 2 ? "hidden" : "block"
                   }`}
@@ -145,6 +181,13 @@ export default function VeronaWomenReels() {
                       <span>{card.badge}</span>
                     </span>
                   </div>
+
+                  {/* Play/Pause Overlay Indicator on active center card */}
+                  {offset === 0 && (
+                    <div className="absolute top-4 right-4 z-20 p-2 rounded-full bg-black/40 backdrop-blur-md text-white border border-white/20">
+                      {isPaused ? <Play className="w-3.5 h-3.5 text-luxury-gold fill-current" /> : <Pause className="w-3.5 h-3.5 text-white fill-current" />}
+                    </div>
+                  )}
 
                   {/* Bottom Caption Overlay */}
                   <div className="absolute bottom-5 left-4 right-4 z-20 text-white space-y-1">
@@ -183,7 +226,10 @@ export default function VeronaWomenReels() {
           {VERONA_WOMEN_CARDS.map((_, idx) => (
             <button
               key={idx}
-              onClick={() => setActiveIndex(idx)}
+              onClick={() => {
+                setActiveIndex(idx);
+                setIsPaused(true);
+              }}
               className={`h-1.5 rounded-full transition-all duration-300 ${
                 activeIndex === idx ? "w-8 bg-luxury-gold" : "w-3 bg-stone-300 hover:bg-stone-500"
               }`}

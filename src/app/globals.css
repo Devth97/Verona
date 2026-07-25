@@ -1,0 +1,47 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 40 25% 97%; /* #FAF7F2 */
+    --foreground: 20 10% 10%; /* #1C1917 */
+  }
+
+  body {
+    background-color: #FAF7F2;
+    color: #1C1917;
+    font-family: var(--font-inter), 'Montserrat', sans-serif;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, h4, .font-serif {
+    font-family: 'Playfair Display', 'Cormorant Garamond', Georgia, serif;
+  }
+}
+
+/* Custom Luxury Animations & UI Tokens */
+.gold-gradient-text {
+  background: linear-gradient(135deg, #B89346 0%, #D4AF37 50%, #C5A059 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.gold-border-glow {
+  box-shadow: 0 0 15px rgba(197, 160, 89, 0.25);
+}
+
+.tarnish-badge {
+  background: linear-gradient(135deg, #F8F3EA 0%, #EFE5D3 100%);
+  border: 1px solid #D4AF37;
+  color: #8C6D23;
+}
+
+/* Hide scrollbars for clean carousel UX */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

@@ -13,32 +13,32 @@ export const CATEGORY_CARDS: CategoryCard[] = [
   {
     id: "necklaces",
     name: "Necklace",
-    image: "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=400&q=80",
+    image: "/images/celeste_solitaire_pendant_1784974551066.jpg",
   },
   {
     id: "earrings",
     name: "Earrings",
-    image: "https://images.unsplash.com/photo-1630019852942-f89202989a59?auto=format&fit=crop&w=400&q=80",
+    image: "/images/aura_pearl_hoops_1784974566340.jpg",
   },
   {
     id: "rings",
     name: "Rings",
-    image: "https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=400&q=80",
+    image: "/images/luna_pave_ring_1784974583443.jpg",
   },
   {
     id: "bracelets",
     name: "Bracelets",
-    image: "https://images.unsplash.com/photo-1611591475179-6fe5e7942297?auto=format&fit=crop&w=400&q=80",
+    image: "/images/gold_bracelet_category_1784975180318.jpg",
   },
   {
     id: "anklets",
     name: "Anklets",
-    image: "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&w=400&q=80",
+    image: "/images/hero_anklets_banner_1784972627399.jpg",
   },
   {
     id: "under-999",
     name: "Under ₹999",
-    image: "https://images.unsplash.com/photo-1603561591411-07134e71a2a9?auto=format&fit=crop&w=400&q=80",
+    image: "/images/pvd_gold_craftsmanship_1784973415910.jpg",
   },
 ];
 
@@ -52,7 +52,7 @@ export default function CategoryVisualCards({
   onSelectCategory,
 }: CategoryVisualCardsProps) {
   return (
-    <section className="py-10 bg-white border-b border-stone-200/80">
+    <section className="py-8 bg-white border-b border-stone-200/80">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-3 sm:grid-cols-6 gap-3 sm:gap-6">
           {CATEGORY_CARDS.map((cat) => {

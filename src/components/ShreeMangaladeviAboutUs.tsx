@@ -19,6 +19,7 @@ export default function ShreeMangaladeviAboutUs() {
                 src="/images/shree_mangaladevi_showroom.jpg"
                 alt="Shree Mangaladevi Jewellers Showroom Facade Hampankatta Mangaluru"
                 fill
+                unoptimized
                 sizes="(max-width: 1024px) 100vw, 40vw"
                 className="object-cover object-center group-hover:scale-105 transition-transform duration-700"
               />

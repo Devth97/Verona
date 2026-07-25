@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import Image from "next/image";
 import Navbar from "@/components/Navbar";
 import ProductCard from "@/components/ProductCard";
 import CartDrawer, { CartItem } from "@/components/CartDrawer";
@@ -14,6 +13,8 @@ import FaqAccordion from "@/components/FaqAccordion";
 import TarnishProofGuaranteeBanner from "@/components/TarnishProofGuaranteeBanner";
 import ReviewsSection from "@/components/ReviewsSection";
 import VeronaWomenReels from "@/components/VeronaWomenReels";
+import HeroSliderBanner from "@/components/HeroSliderBanner";
+import CategoryVisualCards from "@/components/CategoryVisualCards";
 import WhatsAppWidget from "@/components/WhatsAppWidget";
 import BackToTopButton from "@/components/BackToTopButton";
 import StickyAddToCartBar from "@/components/StickyAddToCartBar";
@@ -23,6 +24,7 @@ import { Sparkles, Shield, Award, ArrowRight, Heart, Star, Check, MapPin } from 
 
 export default function Home() {
   const [activeCategory, setActiveCategory] = useState("all");
+  const [activeTab, setActiveTab] = useState<"all" | "everyday" | "office">("all");
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [wishlistItems, setWishlistItems] = useState<Product[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -56,11 +58,19 @@ export default function Home() {
     });
   };
 
-  // Filter products based on selected category / price filter
+  // Filter products based on category & everyday/office tabs
   const filteredProducts = PRODUCTS.filter((product) => {
-    if (activeCategory === "all") return true;
-    if (activeCategory === "under-999") return product.price <= 999;
-    return product.category === activeCategory;
+    // Category check
+    let catMatch = true;
+    if (activeCategory === "under-999") catMatch = product.price <= 999;
+    else if (activeCategory !== "all") catMatch = product.category === activeCategory;
+
+    // Tab check (Everyday Wear / Office Wear)
+    let tabMatch = true;
+    if (activeTab === "everyday") tabMatch = product.tag === "everyday";
+    else if (activeTab === "office") tabMatch = product.tag === "office";
+
+    return catMatch && tabMatch;
   });
 
   const handleAddToCart = (product: Product, quantity: number = 1) => {
@@ -116,93 +126,50 @@ export default function Home() {
 
       {/* Main Content */}
       <main className="flex-1">
-        {/* Hero Banner */}
-        <section className="relative overflow-hidden bg-gradient-to-b from-luxury-cream/80 via-luxury-bg to-luxury-bg py-12 lg:py-20 border-b border-stone-200/60">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-              {/* Text Left */}
-              <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
-                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-luxury-gold/40 text-luxury-goldHover text-xs font-semibold shadow-sm">
-                  <Sparkles className="w-3.5 h-3.5 text-luxury-gold" />
-                  <span>VERONA • By Mangaladevi Jewellers • Under ₹3,500</span>
-                </div>
+        {/* Full-Width Sorele-Style Hero Slider Banner (Screenshot 1) */}
+        <HeroSliderBanner onShopNow={() => setActiveCategory("all")} />
 
-                <h1 className="text-3xl sm:text-5xl lg:text-6xl font-serif font-bold text-stone-900 leading-[1.15] tracking-tight">
-                  Everyday Luxury <br />
-                  <span className="italic font-normal font-serif text-luxury-goldHover">
-                    That Never Tarnishes.
-                  </span>
-                </h1>
+        {/* Visual Category Cards Grid (Screenshot 2) */}
+        <CategoryVisualCards
+          activeCategory={activeCategory}
+          onSelectCategory={(cat) => setActiveCategory(cat)}
+        />
 
-                <p className="text-sm sm:text-base text-stone-600 max-w-xl mx-auto lg:mx-0 leading-relaxed font-sans">
-                  Rooted in Mangaluru&apos;s rich heritage. Waterproof, sweatproof, and skin-safe 18K gold plated & 925 silver jewellery designed for modern Indian women.
-                </p>
-
-                {/* Hero Badges */}
-                <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4 pt-2 text-xs font-semibold text-stone-700">
-                  <div className="flex items-center gap-1.5 bg-white/80 px-3 py-1.5 rounded-lg border border-stone-200">
-                    <Shield className="w-4 h-4 text-luxury-gold" />
-                    <span>Waterproof & Sweatproof</span>
-                  </div>
-                  <div className="flex items-center gap-1.5 bg-white/80 px-3 py-1.5 rounded-lg border border-stone-200">
-                    <Award className="w-4 h-4 text-luxury-gold" />
-                    <span>Hypoallergenic 925 Silver</span>
-                  </div>
-                  <div
-                    onClick={() => setIsStoreLocatorOpen(true)}
-                    className="flex items-center gap-1.5 bg-luxury-goldLight hover:bg-luxury-cream text-luxury-goldHover px-3 py-1.5 rounded-lg border border-luxury-gold/40 cursor-pointer transition-colors"
-                  >
-                    <MapPin className="w-4 h-4 text-luxury-gold" />
-                    <span>Visit Mangaluru Store</span>
-                  </div>
-                </div>
-
-                {/* Call to Action Buttons */}
-                <div className="flex flex-wrap items-center justify-center lg:justify-start gap-3 pt-4">
-                  <button
-                    onClick={() => setActiveCategory("under-999")}
-                    className="px-6 py-3.5 bg-luxury-charcoal hover:bg-black text-white text-xs font-semibold rounded-xl transition-all shadow-md flex items-center gap-2"
-                  >
-                    <span>Shop Best Sellers Under ₹999</span>
-                    <ArrowRight className="w-4 h-4 text-luxury-gold" />
-                  </button>
-                  <button
-                    onClick={() => setActiveCategory("all")}
-                    className="px-6 py-3.5 bg-white hover:bg-stone-50 text-stone-900 border border-stone-300 text-xs font-semibold rounded-xl transition-all shadow-sm"
-                  >
-                    View All Collections
-                  </button>
-                </div>
-              </div>
-
-              {/* Hero Image Collage */}
-              <div className="lg:col-span-5 relative flex justify-center">
-                <div className="relative w-full max-w-md aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl border-4 border-white">
-                  <Image
-                    src="https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=1000&q=80"
-                    alt="VERONA Luxury Jewellery Collection by Mangaladevi Jewellers"
-                    fill
-                    priority
-                    className="object-cover object-center"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
-                  <div className="absolute bottom-6 left-6 right-6 text-white p-4 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20">
-                    <p className="text-xs uppercase tracking-widest font-semibold text-luxury-gold">
-                      Featured Piece
-                    </p>
-                    <h3 className="font-serif text-lg font-bold text-white">
-                      Celeste 18K Gold Solitaire — ₹1,299
-                    </h3>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Category Filters Bar */}
+        {/* Product Collection Grid with Everyday Wear / Office Wear Tab Switcher (Screenshot 2 & 3) */}
         <section className="py-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between mb-8">
+          
+          {/* Tab Switcher matching Sorele.co (EVERYDAY WEAR | OFFICE WEAR) */}
+          <div className="flex justify-center items-center gap-6 mb-8 border-b border-stone-200 pb-3">
+            <button
+              onClick={() => setActiveTab("all")}
+              className={`text-xs uppercase tracking-[0.25em] font-bold py-2 transition-colors relative ${
+                activeTab === "all" ? "text-stone-900" : "text-stone-400 hover:text-stone-700"
+              }`}
+            >
+              All Pieces
+              {activeTab === "all" && <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-luxury-gold" />}
+            </button>
+            <button
+              onClick={() => setActiveTab("everyday")}
+              className={`text-xs uppercase tracking-[0.25em] font-bold py-2 transition-colors relative ${
+                activeTab === "everyday" ? "text-stone-900" : "text-stone-400 hover:text-stone-700"
+              }`}
+            >
+              EVERYDAY WEAR
+              {activeTab === "everyday" && <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-luxury-gold" />}
+            </button>
+            <button
+              onClick={() => setActiveTab("office")}
+              className={`text-xs uppercase tracking-[0.25em] font-bold py-2 transition-colors relative ${
+                activeTab === "office" ? "text-stone-900" : "text-stone-400 hover:text-stone-700"
+              }`}
+            >
+              OFFICE WEAR
+              {activeTab === "office" && <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-luxury-gold" />}
+            </button>
+          </div>
+
+          <div className="flex items-center justify-between mb-6">
             <div>
               <h2 className="text-2xl sm:text-3xl font-serif font-bold text-stone-900">
                 {activeCategory === "all" && "All Lightweight Jewellery"}
@@ -213,18 +180,18 @@ export default function Home() {
                 {activeCategory === "anklets" && "Waterproof Barefoot Anklets"}
                 {activeCategory === "under-999" && "Curated Pieces Under ₹999"}
               </h2>
-              <p className="text-xs text-stone-500 mt-1">
+              <p className="text-xs text-stone-500 mt-1 font-sans">
                 Showing {filteredProducts.length} items • Guaranteed price cap under ₹3,500
               </p>
             </div>
 
             {/* Quick Price Badge Pill */}
-            <div className="hidden sm:block px-3 py-1.5 bg-luxury-goldLight border border-luxury-gold/40 text-luxury-goldHover text-xs font-bold rounded-lg">
+            <div className="hidden sm:block px-3.5 py-1.5 bg-luxury-goldLight border border-luxury-gold/40 text-luxury-goldHover text-xs font-bold rounded-lg">
               Max Price: ₹3,500
             </div>
           </div>
 
-          {/* Product Grid */}
+          {/* Product Grid with Hover Image Swap & Percentage Badges (Screenshot 3) */}
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
             {filteredProducts.map((product) => (
               <ProductCard

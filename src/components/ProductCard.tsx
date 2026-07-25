@@ -1,7 +1,8 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { Star, Shield, ShoppingBag, Heart } from "lucide-react";
 import { Product } from "@/data/products";
 
@@ -20,28 +21,34 @@ export default function ProductCard({
   isWishlisted = false,
   onToggleWishlist,
 }: ProductCardProps) {
+  const [isHovered, setIsHovered] = useState(false);
+
   const discountPercent = product.originalPrice
     ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
     : 0;
 
+  const currentImage = isHovered && product.secondaryImage ? product.secondaryImage : product.image;
+
   return (
-    <div className="group relative bg-white rounded-2xl overflow-hidden border border-stone-200/70 hover:border-luxury-gold/50 transition-all duration-300 hover:shadow-luxury flex flex-col justify-between">
+    <div
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      className="group relative bg-white rounded-2xl overflow-hidden border border-stone-200/70 hover:border-luxury-gold/50 transition-all duration-300 hover:shadow-luxury flex flex-col justify-between"
+    >
       {/* Product Image & Badges Container */}
-      <div
-        onClick={() => onQuickView && onQuickView(product)}
-        className="relative aspect-square w-full overflow-hidden bg-stone-100 cursor-pointer"
-      >
+      <Link href={`/products/${product.id}`} className="block relative aspect-square w-full overflow-hidden bg-stone-50 cursor-pointer">
         <Image
-          src={product.image}
+          src={currentImage}
           alt={product.title}
           fill
           sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-          className="object-cover object-center group-hover:scale-105 transition-transform duration-500"
+          className="object-cover object-center transition-all duration-500 ease-in-out group-hover:scale-105"
         />
 
         {/* Wishlist Heart Icon */}
         <button
           onClick={(e) => {
+            e.preventDefault();
             e.stopPropagation();
             if (onToggleWishlist) onToggleWishlist(product);
           }}
@@ -62,41 +69,26 @@ export default function ProductCard({
               {product.badge}
             </span>
           )}
-          {discountPercent > 0 && (
-            <span className="px-2.5 py-1 text-[10px] font-bold rounded-md bg-luxury-charcoal text-luxury-gold tracking-wider">
-              {discountPercent}% OFF
-            </span>
-          )}
         </div>
 
-        {/* Anti-Tarnish Guarantee Tag */}
+        {/* Anti-Tarnish Guarantee Tag on Hover */}
         <div className="absolute bottom-3 left-3 right-3 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
           <div className="bg-white/95 backdrop-blur-md px-2.5 py-1.5 rounded-lg border border-luxury-gold/40 flex items-center justify-center gap-1 text-[10px] font-medium text-luxury-goldHover shadow-md">
             <Shield className="w-3 h-3 text-luxury-gold shrink-0" />
             <span>100% Tarnish-Proof & Waterproof</span>
           </div>
         </div>
-      </div>
+      </Link>
 
       {/* Product Info */}
       <div className="p-4 flex flex-col flex-1 justify-between">
         <div>
-          {/* Rating */}
-          <div className="flex items-center gap-1 mb-1.5">
-            <div className="flex text-amber-400">
-              {[...Array(5)].map((_, i) => (
-                <Star key={i} className="w-3 h-3 fill-current" />
-              ))}
-            </div>
-            <span className="text-[11px] font-medium text-stone-500">
-              {product.rating} ({product.reviewsCount})
-            </span>
-          </div>
-
           {/* Title */}
-          <h3 className="font-serif font-semibold text-stone-900 text-sm sm:text-base line-clamp-1 group-hover:text-luxury-gold transition-colors">
-            {product.title}
-          </h3>
+          <Link href={`/products/${product.id}`}>
+            <h3 className="font-serif font-semibold text-stone-900 text-sm sm:text-base line-clamp-1 group-hover:text-luxury-gold transition-colors cursor-pointer">
+              {product.title}
+            </h3>
+          </Link>
 
           {/* Material description */}
           <p className="text-[11px] text-stone-500 line-clamp-1 mt-0.5 font-sans">
@@ -104,22 +96,24 @@ export default function ProductCard({
           </p>
         </div>
 
-        {/* Price & Action */}
+        {/* Price & Action (Matching Sorele.co format: ₹2,450 ₹3,598 (31%)) */}
         <div className="mt-4 pt-3 border-t border-stone-100 flex items-center justify-between">
           <div>
-            <div className="flex items-baseline gap-2">
+            <div className="flex items-baseline gap-1.5 flex-wrap">
               <span className="text-base sm:text-lg font-bold text-stone-900 font-sans">
                 ₹{product.price.toLocaleString("en-IN")}
               </span>
               {product.originalPrice && (
-                <span className="text-xs text-stone-400 line-through">
+                <span className="text-xs text-stone-400 line-through font-sans">
                   ₹{product.originalPrice.toLocaleString("en-IN")}
                 </span>
               )}
+              {discountPercent > 0 && (
+                <span className="text-xs font-bold text-emerald-600 font-sans">
+                  ({discountPercent}%)
+                </span>
+              )}
             </div>
-            <span className="text-[9px] uppercase tracking-wider text-emerald-700 font-semibold block">
-              Inclusive of taxes
-            </span>
           </div>
 
           <button

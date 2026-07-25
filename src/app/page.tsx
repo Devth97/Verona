@@ -48,6 +48,17 @@ export default function Home() {
     }
   }, []);
 
+  // Category selection handler with smooth scroll to products section
+  const handleSelectCategory = (cat: string) => {
+    setActiveCategory(cat);
+    setTimeout(() => {
+      const element = document.getElementById("products-grid");
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }, 50);
+  };
+
   const handleToggleWishlist = (product: Product) => {
     setWishlistItems((prev) => {
       const exists = prev.some((p) => p.id === product.id);
@@ -123,22 +134,22 @@ export default function Home() {
         onOpenRingSizeFinder={() => setIsRingSizeFinderOpen(true)}
         userPhone={userPhone}
         activeCategory={activeCategory}
-        onSelectCategory={setActiveCategory}
+        onSelectCategory={handleSelectCategory}
       />
 
       {/* Main Content */}
       <main className="flex-1">
         {/* Full-Width Sorele-Style Hero Slider Banner */}
-        <HeroSliderBanner onShopNow={() => setActiveCategory("all")} />
+        <HeroSliderBanner onShopNow={() => handleSelectCategory("all")} />
 
         {/* Visual Category Cards Grid */}
         <CategoryVisualCards
           activeCategory={activeCategory}
-          onSelectCategory={(cat) => setActiveCategory(cat)}
+          onSelectCategory={(cat) => handleSelectCategory(cat)}
         />
 
-        {/* Product Collection Grid with Everyday Wear / Office Wear Tab Switcher */}
-        <section className="py-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Product Collection Grid with ID for smooth scrolling */}
+        <section id="products-grid" className="py-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 scroll-mt-24">
           {/* Tab Switcher matching Sorele.co */}
           <div className="flex justify-center items-center gap-6 mb-8 border-b border-stone-200 pb-3">
             <button
@@ -232,7 +243,7 @@ export default function Home() {
               Every order includes our signature pouch, microfiber polishing cloth, and custom gift note card. Perfect for birthdays, anniversaries, and self-love.
             </p>
             <button
-              onClick={() => setActiveCategory("under-999")}
+              onClick={() => handleSelectCategory("under-999")}
               className="inline-flex items-center gap-2 px-6 py-3.5 bg-luxury-gold hover:bg-luxury-goldHover text-white text-xs font-semibold rounded-xl transition-all shadow-md"
             >
               <span>Explore Giftables Under ₹1,500</span>

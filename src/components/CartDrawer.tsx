@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
-import { X, Trash2, Plus, Minus, ShoppingBag, Sparkles, ShieldCheck, ArrowRight } from "lucide-react";
+import { X, Trash2, Plus, Minus, ShoppingBag, Sparkles, ShieldCheck, ArrowRight, Gift } from "lucide-react";
 import { Product } from "@/data/products";
 
 export interface CartItem {
@@ -31,6 +31,8 @@ export default function CartDrawer({
 }: CartDrawerProps) {
   const [couponCode, setCouponCode] = useState("");
   const [discountApplied, setDiscountApplied] = useState(false);
+  const [showGiftNote, setShowGiftNote] = useState(false);
+  const [giftNote, setGiftNote] = useState("");
 
   if (!isOpen) return null;
 
@@ -177,6 +179,29 @@ export default function CartDrawer({
           {/* Footer Checkout */}
           {cartItems.length > 0 && (
             <div className="p-4 sm:p-6 border-t border-stone-200 bg-luxury-bg space-y-3">
+              {/* Gift Packaging & Personalised Note Toggle */}
+              <div className="p-3 bg-white rounded-xl border border-stone-200 text-xs">
+                <label className="flex items-center gap-2 font-semibold text-stone-800 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={showGiftNote}
+                    onChange={(e) => setShowGiftNote(e.target.checked)}
+                    className="accent-luxury-gold rounded"
+                  />
+                  <Gift className="w-4 h-4 text-luxury-gold shrink-0" />
+                  <span>Add FREE Luxury Gift Box & Personalised Note</span>
+                </label>
+                {showGiftNote && (
+                  <textarea
+                    rows={2}
+                    placeholder="Enter your gift message for the recipient..."
+                    value={giftNote}
+                    onChange={(e) => setGiftNote(e.target.value)}
+                    className="w-full mt-2.5 p-2 bg-stone-50 border border-stone-300 rounded-lg text-xs focus:outline-none focus:border-luxury-gold"
+                  />
+                )}
+              </div>
+
               {/* Coupon Form */}
               <form onSubmit={handleApplyCoupon} className="flex gap-2">
                 <input

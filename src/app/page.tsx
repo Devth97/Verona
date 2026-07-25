@@ -10,6 +10,10 @@ import ProductQuickViewModal from "@/components/ProductQuickViewModal";
 import SearchModal from "@/components/SearchModal";
 import TarnishProofGuaranteeBanner from "@/components/TarnishProofGuaranteeBanner";
 import ReviewsSection from "@/components/ReviewsSection";
+import VeronaWomenReels from "@/components/VeronaWomenReels";
+import WhatsAppWidget from "@/components/WhatsAppWidget";
+import BackToTopButton from "@/components/BackToTopButton";
+import StickyAddToCartBar from "@/components/StickyAddToCartBar";
 import Footer from "@/components/Footer";
 import { PRODUCTS, Product } from "@/data/products";
 import { Sparkles, Shield, Award, ArrowRight, Heart, Star, Check } from "lucide-react";
@@ -63,11 +67,13 @@ export default function Home() {
     setCartItems((prev) => prev.filter((item) => item.product.id !== id));
   };
 
+  const totalCartCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
+
   return (
-    <div className="min-h-screen flex flex-col justify-between">
+    <div className="min-h-screen flex flex-col justify-between relative bg-luxury-bg text-luxury-charcoal selection:bg-luxury-goldLight selection:text-luxury-goldHover">
       {/* Header */}
       <Navbar
-        cartCount={cartItems.reduce((acc, item) => acc + item.quantity, 0)}
+        cartCount={totalCartCount}
         onOpenCart={() => setIsCartOpen(true)}
         onOpenAuth={() => setIsAuthOpen(true)}
         onOpenSearch={() => setIsSearchOpen(true)}
@@ -196,6 +202,9 @@ export default function Home() {
           </div>
         </section>
 
+        {/* VERONA Women Video Reels Showcase (Sorele Women Style) */}
+        <VeronaWomenReels />
+
         {/* Tarnish Proof Guarantee Technology Section */}
         <TarnishProofGuaranteeBanner />
 
@@ -224,6 +233,11 @@ export default function Home() {
           </div>
         </section>
       </main>
+
+      {/* Floating Sorele-Style Widgets */}
+      <WhatsAppWidget />
+      <BackToTopButton />
+      <StickyAddToCartBar onOpenCart={() => setIsCartOpen(true)} cartCount={totalCartCount} />
 
       {/* Cart Drawer */}
       <CartDrawer
